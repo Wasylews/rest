@@ -2,7 +2,12 @@
 
 /**
  * In this file we set url mappings for application.
- * For simplicity we are using regular expressions.
+ * Mapping examples:
+ * /user/{id}
+ * /user/{id}/{page}
+ * /user?id={id}
+ * /user?id={id}&page={page}
+ * /user/{id}?page={page}
  *
  * Because of Controller architecture it's better to use
  * different controllers for different REST resources.
@@ -11,5 +16,5 @@
 
 $router = $container->get(\Core\Web\Router::class);
 
-// /user/{id}?page={page}
-$router->get('\/user\/(?P<id>\d+)\?page=(?P<page>\d+)', \App\Controller\AppController::class);
+$router->get('/user/{id}?page={page}', \App\Controller\AppController::class);
+$router->get('/user?id={id}&page={page}', \App\Controller\AppController::class);
