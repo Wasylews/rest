@@ -2,7 +2,6 @@
 
 namespace core\web;
 
-
 class Router {
 
     private $routes = [];
@@ -24,16 +23,17 @@ class Router {
     }
 
     public function handle(\core\http\Request $request) {
-        foreach ($this->routes as $route) {
-            if (preg_match($route, $request->getUrl())) {
-                return $this->callHandler($route, $request);
+        foreach ($this->routes as $route => $controller) {
+            $parameters = UrlMatcher::match($route, $request->getUrl());
+            if ($parameters != null) {
+                $request->setParameters($parameters);
+                return $this->callHandler(new $controller, $request);
             }
         }
-        return new \core\http\Response(404, 'Not found');
+        return new \core\http\Response(404);
     }
 
-    private function callHandler($route, \core\http\Request $request) {
-        $controller = $this->routes[$route];
+    private function callHandler(\core\http\Controller $controller, \core\http\Request $request) {
         switch ($request->getMethod()) {
             case \core\http\Request::HTTP_GET:
                 return $controller->get($request);
@@ -44,5 +44,6 @@ class Router {
             case \core\http\Request::HTTP_DELETE:
                 return $controller->delete($request);
         }
+        return new \core\http\Response(\core\http\Response::HTTP_METHOD_NOT_ALLOWED);
     }
 }
