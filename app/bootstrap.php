@@ -7,7 +7,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 */
 $container = new \core\di\DependencyContainer();
 
-$container->register(\core\web\Router::class);
+$container->registerSingleton(\core\web\Router::class);
 $container->register(\core\Application::class);
 
 /**

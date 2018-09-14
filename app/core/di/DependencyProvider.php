@@ -9,7 +9,7 @@ namespace core\di;
 */
 class DependencyProvider {
 
-    private $class;
+    protected $class;
 
     public function __construct($class) {
         $this->class = $class;

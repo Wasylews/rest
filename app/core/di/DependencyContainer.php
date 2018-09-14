@@ -12,10 +12,27 @@ class DependencyContainer {
 
     /**
      * Register new class in container
-     * @param $class
+     * @param string $class
      */
     public function register($class) {
         $this->providers[$class] = new DependencyProvider($class);
+    }
+
+    /**
+     * Register new singleton class in container
+     * @param string $class
+     */
+    public function registerSingleton($class) {
+        $this->providers[$class] = new SingletonDependencyProvider($class);
+    }
+
+    /**
+     * Register new class provider
+     * @param string $class class name to store in container
+     * @param string $providerClass provider class name
+     */
+    public function registerProvider($class, $providerClass) {
+        $this->providers[$class] = new $providerClass($class);
     }
 
     /**
@@ -49,7 +66,7 @@ class DependencyContainer {
         $parameters = $this->getConstructorParameters($class);
         foreach ($parameters as $parameter) {
             if (!$this->has($parameter)) {
-                throw new DependencyException("No provider available for $parameter");
+                throw new DependencyException(sprintf('No provider available for %s', $parameter));
             } else {
                 array_push($dependencies, $this->get($parameter));
             }
