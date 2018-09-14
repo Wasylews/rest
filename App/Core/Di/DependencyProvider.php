@@ -11,7 +11,7 @@ class DependencyProvider {
 
     protected $class;
 
-    public function __construct($class) {
+    public function __construct(string $class) {
         $this->class = $class;
     }
 

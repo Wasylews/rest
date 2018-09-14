@@ -171,7 +171,7 @@ class Response {
     */
     private $headers = [];
 
-    public function __construct($statusCode, $content = '') {
+    public function __construct(int $statusCode, string $content = '') {
         $this->setStatus($statusCode);
         $this->content = $content;
     }
@@ -189,7 +189,7 @@ class Response {
         $this->statusText = self::$statusTexts[$statusCode];
     }
 
-    public function getStatus() {
+    public function getStatus(): string {
         return sprintf('HTTP/%s %s %s',
             $this->getVersion(),
             $this->getStatusCode(),

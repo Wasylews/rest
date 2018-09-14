@@ -22,7 +22,7 @@ class Router {
         $this->routes[$route] = $controller;
     }
 
-    public function handle(\Core\Http\Request $request) {
+    public function handle(\Core\Http\Request $request): \Core\Http\Response {
         foreach ($this->routes as $route => $controller) {
             $parameters = UrlMatcher::match($route, $request->getUrl());
             if ($parameters != null) {
@@ -33,7 +33,7 @@ class Router {
         return new \Core\Http\Response(404);
     }
 
-    private function callHandler(\Core\Http\Controller $controller, \Core\Http\Request $request) {
+    private function callHandler(\Core\Http\Controller $controller, \Core\Http\Request $request): \Core\Http\Response {
         switch ($request->getMethod()) {
             case \Core\Http\Request::HTTP_GET:
                 return $controller->get($request);

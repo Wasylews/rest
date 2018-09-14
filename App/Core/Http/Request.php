@@ -16,23 +16,23 @@ class Request {
     private $body;
     private $parameters;
 
-    public function __construct($method, $url) {
+    public function __construct(string $method, string $url) {
         $this->method = $method;
         $this->url = $url;
     }
 
-    public static function fromGlobals() {
+    public static function fromGlobals(): Request {
         $request = new Request($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
         $request->setBody($_POST);
         $request->setHeaders(getallheaders());
         return $request;
     }
 
-    public function getUrl() {
+    public function getUrl(): string {
         return $this->url;
     }
 
-    public function getMethod() {
+    public function getMethod(): string {
         return $this->method;
     }
 
@@ -60,7 +60,7 @@ class Request {
         return $this->parameters;
     }
 
-    public function getParameter($name) {
+    public function getParameter($name): string {
         return $this->parameters[$name];
     }
 }

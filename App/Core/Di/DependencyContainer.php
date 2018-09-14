@@ -14,7 +14,7 @@ class DependencyContainer {
      * Register new class in container
      * @param string $class
      */
-    public function register($class) {
+    public function register(string $class) {
         $this->providers[$class] = new DependencyProvider($class);
     }
 
@@ -22,7 +22,7 @@ class DependencyContainer {
      * Register new singleton class in container
      * @param string $class
      */
-    public function registerSingleton($class) {
+    public function registerSingleton(string $class) {
         $this->providers[$class] = new SingletonDependencyProvider($class);
     }
 
@@ -31,7 +31,7 @@ class DependencyContainer {
      * @param string $class class name to store in container
      * @param string $providerClass provider class name
      */
-    public function registerProvider($class, $providerClass) {
+    public function registerProvider(string $class, string $providerClass) {
         $this->providers[$class] = new $providerClass($class);
     }
 
@@ -40,7 +40,7 @@ class DependencyContainer {
      * @param $class
      * @return mixed|null get instance or null if there is no provider for class
      */
-    public function get($class) {
+    public function get(string $class) {
         if ($this->has($class)) {
             try {
                 return $this->providers[$class]->get($this->resolveDependencies($class));
@@ -51,7 +51,7 @@ class DependencyContainer {
         return null;
     }
 
-    public function has($class) {
+    public function has(string $class) {
         return array_key_exists($class, $this->providers);
     }
 
@@ -61,7 +61,7 @@ class DependencyContainer {
      * @return array
      * @throws DependencyException if it can't find provider for parameter in this container
      */
-    private function resolveDependencies($class): array {
+    private function resolveDependencies(string $class): array {
         $dependencies = [];
         $parameters = $this->getConstructorParameters($class);
         foreach ($parameters as $parameter) {
@@ -80,7 +80,7 @@ class DependencyContainer {
      * @return array
      * @throws DependencyException if parameter resolving failed
      */
-    private function getConstructorParameters($class): array {
+    private function getConstructorParameters(string $class): array {
         $parameters = [];
         try {
             $reflectionClass = new \ReflectionClass($class);

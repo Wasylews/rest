@@ -5,7 +5,7 @@ namespace Core\Web;
 
 class UrlMatcher {
 
-    public static function match($pattern, $url) {
+    public static function match($pattern, $url): array {
         $matches = [];
         if (!preg_match('/' . $pattern . '/', $url, $matches)) {
             return null;
