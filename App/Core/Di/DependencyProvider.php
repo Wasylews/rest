@@ -1,6 +1,6 @@
 <?php
 
-namespace core\di;
+namespace Core\Di;
 
 
 /**

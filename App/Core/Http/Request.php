@@ -1,14 +1,14 @@
 <?php
 
-namespace core\http;
+namespace Core\Http;
 
 
 class Request {
 
-    const HTTP_GET = "GET";
-    const HTTP_POST = "POST";
-    const HTTP_PUT = "PUT";
-    const HTTP_DELETE = "DELETE";
+    const HTTP_GET = 'GET';
+    const HTTP_POST = 'POST';
+    const HTTP_PUT = 'PUT';
+    const HTTP_DELETE = 'DELETE';
 
     private $url;
     private $method;

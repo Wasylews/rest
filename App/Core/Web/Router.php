@@ -1,6 +1,6 @@
 <?php
 
-namespace core\web;
+namespace Core\Web;
 
 class Router {
 
@@ -22,7 +22,7 @@ class Router {
         $this->routes[$route] = $controller;
     }
 
-    public function handle(\core\http\Request $request) {
+    public function handle(\Core\Http\Request $request) {
         foreach ($this->routes as $route => $controller) {
             $parameters = UrlMatcher::match($route, $request->getUrl());
             if ($parameters != null) {
@@ -30,20 +30,20 @@ class Router {
                 return $this->callHandler(new $controller, $request);
             }
         }
-        return new \core\http\Response(404);
+        return new \Core\Http\Response(404);
     }
 
-    private function callHandler(\core\http\Controller $controller, \core\http\Request $request) {
+    private function callHandler(\Core\Http\Controller $controller, \Core\Http\Request $request) {
         switch ($request->getMethod()) {
-            case \core\http\Request::HTTP_GET:
+            case \Core\Http\Request::HTTP_GET:
                 return $controller->get($request);
-            case \core\http\Request::HTTP_POST:
+            case \Core\Http\Request::HTTP_POST:
                 return $controller->post($request);
-            case \core\http\Request::HTTP_PUT:
+            case \Core\Http\Request::HTTP_PUT:
                 return $controller->put($request);
-            case \core\http\Request::HTTP_DELETE:
+            case \Core\Http\Request::HTTP_DELETE:
                 return $controller->delete($request);
         }
-        return new \core\http\Response(\core\http\Response::HTTP_METHOD_NOT_ALLOWED);
+        return new \Core\Http\Response(\Core\Http\Response::HTTP_METHOD_NOT_ALLOWED);
     }
 }

@@ -1,26 +1,26 @@
 <?php
 
-namespace core;
+namespace Core;
 
 
 class Application {
 
     /**
-     * @var web\Router
+     * @var Web\Router
      */
     private $router;
 
-    public function __construct(web\Router $router) {
+    public function __construct(Web\Router $router) {
         $this->router = $router;
     }
 
     public function run() {
-        $request = http\Request::fromGlobals();
+        $request = Http\Request::fromGlobals();
         $response = $this->router->handle($request);
         $this->sendResponse($response);
     }
 
-    private function sendResponse(http\Response $response) {
+    private function sendResponse(Http\Response $response) {
         foreach ($response->getHeaders() as $key => $value) {
             header("$key: $value", false, $response->getStatusCode());
         }

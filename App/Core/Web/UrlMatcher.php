@@ -1,6 +1,6 @@
 <?php
 
-namespace core\web;
+namespace Core\Web;
 
 
 class UrlMatcher {
