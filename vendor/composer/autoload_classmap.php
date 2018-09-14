@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'AppController' => $baseDir . '/app/controllers/AppController.php',
     'Doctrine\\Common\\Cache\\ApcCache' => $vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache/ApcCache.php',
     'Doctrine\\Common\\Cache\\ApcuCache' => $vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache/ApcuCache.php',
     'Doctrine\\Common\\Cache\\ArrayCache' => $vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache/ArrayCache.php',
@@ -699,11 +698,15 @@ return array(
     'Symfony\\Component\\Debug\\FatalErrorHandler\\UndefinedFunctionFatalErrorHandler' => $vendorDir . '/symfony/debug/FatalErrorHandler/UndefinedFunctionFatalErrorHandler.php',
     'Symfony\\Component\\Debug\\FatalErrorHandler\\UndefinedMethodFatalErrorHandler' => $vendorDir . '/symfony/debug/FatalErrorHandler/UndefinedMethodFatalErrorHandler.php',
     'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
+    'app\\controller\\AppController' => $baseDir . '/app/controller/AppController.php',
     'core\\Application' => $baseDir . '/app/core/Application.php',
     'core\\di\\DependencyContainer' => $baseDir . '/app/core/di/DependencyContainer.php',
+    'core\\di\\DependencyException' => $baseDir . '/app/core/di/DependencyException.php',
+    'core\\di\\DependencyProvider' => $baseDir . '/app/core/di/DependencyProvider.php',
+    'core\\di\\SingletonDependencyProvider' => $baseDir . '/app/core/di/SingletonDependencyProvider.php',
     'core\\http\\Controller' => $baseDir . '/app/core/http/Controller.php',
     'core\\http\\Request' => $baseDir . '/app/core/http/Request.php',
     'core\\http\\Response' => $baseDir . '/app/core/http/Response.php',
-    'core\\web\\RouteException' => $baseDir . '/app/core/web/RouteException.php',
     'core\\web\\Router' => $baseDir . '/app/core/web/Router.php',
+    'core\\web\\UrlMatcher' => $baseDir . '/app/core/web/UrlMatcher.php',
 );

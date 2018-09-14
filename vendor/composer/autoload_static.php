@@ -55,6 +55,10 @@ class ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb
         ),
     );
 
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/../..' . '/app',
+    );
+
     public static $prefixesPsr0 = array (
         'D' => 
         array (
@@ -73,12 +77,7 @@ class ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb
         ),
     );
 
-    public static $fallbackDirsPsr0 = array (
-        0 => __DIR__ . '/../..' . '/app',
-    );
-
     public static $classMap = array (
-        'AppController' => __DIR__ . '/../..' . '/app/controllers/AppController.php',
         'Doctrine\\Common\\Cache\\ApcCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ApcCache.php',
         'Doctrine\\Common\\Cache\\ApcuCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ApcuCache.php',
         'Doctrine\\Common\\Cache\\ArrayCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ArrayCache.php',
@@ -771,13 +770,17 @@ class ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb
         'Symfony\\Component\\Debug\\FatalErrorHandler\\UndefinedFunctionFatalErrorHandler' => __DIR__ . '/..' . '/symfony/debug/FatalErrorHandler/UndefinedFunctionFatalErrorHandler.php',
         'Symfony\\Component\\Debug\\FatalErrorHandler\\UndefinedMethodFatalErrorHandler' => __DIR__ . '/..' . '/symfony/debug/FatalErrorHandler/UndefinedMethodFatalErrorHandler.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
+        'app\\controller\\AppController' => __DIR__ . '/../..' . '/app/controller/AppController.php',
         'core\\Application' => __DIR__ . '/../..' . '/app/core/Application.php',
         'core\\di\\DependencyContainer' => __DIR__ . '/../..' . '/app/core/di/DependencyContainer.php',
+        'core\\di\\DependencyException' => __DIR__ . '/../..' . '/app/core/di/DependencyException.php',
+        'core\\di\\DependencyProvider' => __DIR__ . '/../..' . '/app/core/di/DependencyProvider.php',
+        'core\\di\\SingletonDependencyProvider' => __DIR__ . '/../..' . '/app/core/di/SingletonDependencyProvider.php',
         'core\\http\\Controller' => __DIR__ . '/../..' . '/app/core/http/Controller.php',
         'core\\http\\Request' => __DIR__ . '/../..' . '/app/core/http/Request.php',
         'core\\http\\Response' => __DIR__ . '/../..' . '/app/core/http/Response.php',
-        'core\\web\\RouteException' => __DIR__ . '/../..' . '/app/core/web/RouteException.php',
         'core\\web\\Router' => __DIR__ . '/../..' . '/app/core/web/Router.php',
+        'core\\web\\UrlMatcher' => __DIR__ . '/../..' . '/app/core/web/UrlMatcher.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -785,8 +788,8 @@ class ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInit401d0583ac0915203ecc7674bd1ed3cb::$classMap;
 
         }, null, ClassLoader::class);
