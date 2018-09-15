@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Http;
 
 
-abstract class Controller {
+interface Controller {
 
-    public abstract function get(Request $request): Response;
-    public abstract function post(Request $request): Response;
-    public abstract function put(Request $request): Response;
-    public abstract function delete(Request $request): Response;
+    public function get(Request $request): Response;
+    public function post(Request $request): Response;
+    public function put(Request $request): Response;
+    public function delete(Request $request): Response;
 }

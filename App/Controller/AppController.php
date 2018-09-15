@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 
-class AppController extends \Core\Http\Controller {
+class AppController implements \Core\Http\Controller {
 
     public function get(\Core\Http\Request $request): \Core\Http\Response {
         return new \Core\Http\Response(\Core\Http\Response::HTTP_OK,
