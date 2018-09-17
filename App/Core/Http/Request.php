@@ -38,7 +38,7 @@ class Request {
         return $this->method;
     }
 
-    public function setHeaders($headers) {
+    public function setHeaders(array $headers) {
         $this->headers = $headers;
     }
 
@@ -46,7 +46,7 @@ class Request {
         return $this->headers;
     }
 
-    public function setBody($body) {
+    public function setBody(array $body) {
         $this->body = $body;
     }
 
@@ -62,7 +62,15 @@ class Request {
         return $this->parameters;
     }
 
-    public function getParameter($name): string {
+    /**
+     * @param string $name
+     * @return string | null
+     */
+    public function getParameter(string $name) {
         return $this->parameters[$name];
+    }
+
+    public function hasParameter(string $name): bool {
+        return array_key_exists($name, $this->parameters);
     }
 }

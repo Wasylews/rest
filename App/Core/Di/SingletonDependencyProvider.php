@@ -6,7 +6,7 @@ namespace Core\Di;
 
 
 /**
- * Base class for singleton providers
+ * Base class for singleton providers.
  * Stores class instance after first creation
 */
 class SingletonDependencyProvider extends DependencyProvider {
