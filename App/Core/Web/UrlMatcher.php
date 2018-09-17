@@ -15,7 +15,7 @@ class UrlMatcher {
      */
     public static function match(string $pattern, string $url) {
         // At first escape special characters and add regex slashes
-        $quotedPattern = '/' . str_replace(['/', '?', '&'], ['\/', '\?', '\&'], $pattern) . '/';
+        $quotedPattern = '/' . str_replace(['/', '?', '&'], ['\/', '\?', '\&'], $pattern) . '$/';
         // Then replace any {parameter} by (?P<parameter>\w+)
         $regexPattern = preg_replace('/\{(?P<parameter>\w+)\}/', '(?P<$1>\w+)', $quotedPattern);
         $matches = [];
