@@ -45,7 +45,7 @@ class DependencyContainer {
     public function get(string $class) {
         if ($this->has($class)) {
             try {
-                return $this->providers[$class]->get($this->resolveDependencies($class));
+                return $this->getProvider($class)->get($this->resolveDependencies($class));
             } catch (DependencyException $e) {
                 return null;
             }
@@ -53,8 +53,50 @@ class DependencyContainer {
         return null;
     }
 
+    public function getProvider(string $class): DependencyProvider {
+        if ($this->hasInterfaceProvider($class)) {
+            return $this->getInterfaceProvider($class);
+        }
+        return $this->providers[$class];
+    }
+
+    /**
+     * Get provider of class that implements given interface
+     * @param string $interface
+     * @return DependencyProvider
+     */
+    private function getInterfaceProvider(string $interface): DependencyProvider {
+        foreach ($this->providers as $className => $provider) {
+            if (ReflectionUtils::implementsInterface($className, $interface)) {
+                return $provider;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if container has provider of $class
+     * or his implementation if $class is name of interface.
+     * @param string $class
+     * @return bool
+     */
     public function has(string $class) {
+        if (ReflectionUtils::isInterface($class)) {
+            return $this->hasInterfaceProvider($class);
+        }
         return array_key_exists($class, $this->providers);
+    }
+
+    /**
+     * Check if container has implementation of this interface
+     * @param string $interface
+     * @return bool
+     */
+    private function hasInterfaceProvider(string $interface) {
+        foreach ($this->providers as $className => $provider) {
+            return ReflectionUtils::implementsInterface($className, $interface);
+        }
+        return false;
     }
 
     /**
