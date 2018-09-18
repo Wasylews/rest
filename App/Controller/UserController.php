@@ -20,8 +20,7 @@ class UserController extends \Core\Http\AbstractController {
 
         $userId = intval($request->getParameter('id'));
         if ($userId != 0) {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_OK,
-                json_encode($this->service->get($userId)));
+            return new \Core\Http\JsonResponse(\Core\Http\Response::HTTP_OK, $this->service->get($userId));
         } else {
             return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST,
                 "Invalid user id");

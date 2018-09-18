@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Core\Http;
 
-
+/**
+ * Base http response class
+*/
 class Response {
 
     /**
@@ -159,7 +161,7 @@ class Response {
     private $statusText;
 
     /**
-     * @var string $content response body
+     * @var mixed $content response body
     */
     private $content;
 
@@ -173,7 +175,7 @@ class Response {
     */
     private $headers = [];
 
-    public function __construct(int $statusCode, string $content = '') {
+    public function __construct(int $statusCode, $content = '') {
         $this->setStatus($statusCode);
         $this->content = $content;
     }
@@ -198,7 +200,7 @@ class Response {
             $this->getStatusText());
     }
 
-    public function getContent(): string {
+    public function getContent() {
         return $this->content;
     }
 
@@ -212,5 +214,13 @@ class Response {
 
     public function setHeader($key, $value) {
         $this->headers[$key] = $value;
+    }
+
+    public function getContentType() {
+        return $this->headers['Content-Type'];
+    }
+
+    public function setContentType(string $type) {
+        $this->headers['Content-Type'] = $type;
     }
 }
