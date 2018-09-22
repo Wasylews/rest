@@ -13,12 +13,6 @@ class UserModel implements SerializableInterface {
     private $firstName;
     private $lastName;
 
-    public function __construct(int $id, string $firstName, string $lastName) {
-        $this->id = $id;
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-    }
-
     public function getId(): int {
         return $this->id;
     }
@@ -32,6 +26,18 @@ class UserModel implements SerializableInterface {
         return $this->lastName;
     }
 
+    public function setId(int $id) {
+        $this->id = $id;
+    }
+
+    public function setFirstName(string $firstName) {
+        $this->firstName = $firstName;
+    }
+
+    public function setLastName(string $lastName) {
+        $this->lastName = $lastName;
+    }
+
     /**
      * Get array of data to serialize
      * @return array
@@ -39,8 +45,8 @@ class UserModel implements SerializableInterface {
     function normalize(): array {
         return [
             'id' => $this->id,
-            'first_name' => $this->firstName,
-            'last_name' => $this->lastName
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName
         ];
     }
 
@@ -49,8 +55,8 @@ class UserModel implements SerializableInterface {
      * @param array $arr
      */
     function denormalize(array $arr) {
-        $this->id = $arr['id'];
-        $this->firstName = $arr['first_name'];
-        $this->lastName = $arr['last_name'];
+        $this->id = intval($arr['id']);
+        $this->firstName = $arr['firstName'];
+        $this->lastName = $arr['lastName'];
     }
 }
