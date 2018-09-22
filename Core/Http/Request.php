@@ -14,8 +14,17 @@ class Request {
 
     private $url;
     private $method;
+    /**
+     * @filed string[] $headers
+    */
     private $headers;
+    /**
+     * @field string @body raw POST data
+    */
     private $body;
+    /**
+     * @field string[] $parameters REST parameters
+    */
     private $parameters;
 
     public function __construct(string $method, string $url) {
@@ -25,7 +34,7 @@ class Request {
 
     public static function fromGlobals(): Request {
         $request = new Request($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-        $request->setBody($_POST);
+        $request->setBody(file_get_contents('php://input'));
         $request->setHeaders(getallheaders());
         return $request;
     }
@@ -46,11 +55,11 @@ class Request {
         return $this->headers;
     }
 
-    public function setBody(array $body) {
+    public function setBody(string $body) {
         $this->body = $body;
     }
 
-    public function getBody(): array {
+    public function getBody(): string {
         return $this->body;
     }
 
@@ -62,11 +71,7 @@ class Request {
         return $this->parameters;
     }
 
-    /**
-     * @param string $name
-     * @return string | null
-     */
-    public function getParameter(string $name) {
+    public function getParameter(string $name): string {
         return $this->parameters[$name];
     }
 
