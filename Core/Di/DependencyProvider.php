@@ -23,6 +23,10 @@ class DependencyProvider {
      * @return mixed
      */
     public function get(array $dependencies) {
+        return $this->makeInstance($dependencies);
+    }
+
+    protected function makeInstance(array $dependencies) {
         return new $this->class(...$dependencies);
     }
 }

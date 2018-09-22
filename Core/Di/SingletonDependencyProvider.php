@@ -18,7 +18,7 @@ class SingletonDependencyProvider extends DependencyProvider {
     */
     public function get(array $dependencies) {
         if ($this->instance == null) {
-            $this->instance = parent::get($dependencies);
+            $this->instance = $this->makeInstance($dependencies);
         }
         return $this->instance;
     }
