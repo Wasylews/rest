@@ -10,7 +10,6 @@ $container = new \Core\Di\DependencyContainer();
 /**
  * Serialization
 */
-$container->registerSingleton(\Core\Serialization\Encoder\JsonEncoder::class);
 $container->registerProvider(\Core\Serialization\Serializer::class,
     \App\Di\Provider\SerializerProvider::class);
 
