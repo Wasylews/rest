@@ -40,10 +40,14 @@ class Application {
 
     private function sendSerializedContent($content, $contentType) {
         $format = $this->getSerializationFormat($contentType);
-        try {
-            echo $this->serializer->serialize($content, $format);
-        } catch (Serialization\SerializationException $e) {
-            echo $e->getMessage();
+        if ($format == null) {
+            echo $content;
+        } else {
+            try {
+                echo $this->serializer->serialize($content, $format);
+            } catch (Serialization\SerializationException $e) {
+                echo $e->getMessage();
+            }
         }
     }
 

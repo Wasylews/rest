@@ -178,6 +178,7 @@ class Response {
     public function __construct(int $statusCode, $content = '') {
         $this->setStatus($statusCode);
         $this->content = $content;
+        $this->setContentType('text/plain');
     }
 
     public function getStatusCode(): int {
@@ -200,7 +201,7 @@ class Response {
             $this->getStatusText());
     }
 
-    public function getContent() {
+    public function getContent(): string {
         return $this->content;
     }
 
@@ -212,11 +213,11 @@ class Response {
         return $this->headers;
     }
 
-    public function setHeader($key, $value) {
+    public function setHeader(string $key, string $value) {
         $this->headers[$key] = $value;
     }
 
-    public function getContentType() {
+    public function getContentType(): string {
         return $this->headers['Content-Type'];
     }
 
