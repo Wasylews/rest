@@ -8,11 +8,7 @@ namespace App\Service;
 class UserService {
 
     public function get(int $id): \App\Model\UserModel {
-        $user = new \App\Model\UserModel();
-        $user->setId($id);
-        $user->setFirstName('John');
-        $user->setLastName('Snow');
-        return $user;
+        return new \App\Model\UserModel($id, 'John', 'Snow');
     }
 
     public function getAll(): array {

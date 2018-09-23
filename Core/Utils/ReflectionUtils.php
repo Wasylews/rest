@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Di;
+namespace Core\Utils;
 
 /**
  * @internal Reflection utils for ioc container
@@ -27,5 +27,14 @@ class ReflectionUtils {
             return in_array($interface, $interfaces);
         }
         return false;
+    }
+
+    public static function newInstance(string $class) {
+        try {
+            $reflectionClass = new \ReflectionClass($class);
+            return $reflectionClass->newInstanceWithoutConstructor();
+        } catch (\ReflectionException $e) {
+            return null;
+        }
     }
 }

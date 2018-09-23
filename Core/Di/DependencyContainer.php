@@ -67,7 +67,7 @@ class DependencyContainer {
      */
     private function getInterfaceProvider(string $interface): DependencyProvider {
         foreach ($this->providers as $className => $provider) {
-            if (ReflectionUtils::implementsInterface($className, $interface)) {
+            if (\Core\Utils\ReflectionUtils::implementsInterface($className, $interface)) {
                 return $provider;
             }
         }
@@ -81,7 +81,7 @@ class DependencyContainer {
      * @return bool
      */
     public function has(string $class) {
-        if (ReflectionUtils::isInterface($class)) {
+        if (\Core\Utils\ReflectionUtils::isInterface($class)) {
             return $this->hasInterfaceProvider($class);
         }
         return array_key_exists($class, $this->providers);
@@ -94,7 +94,7 @@ class DependencyContainer {
      */
     private function hasInterfaceProvider(string $interface) {
         foreach ($this->providers as $className => $provider) {
-            return ReflectionUtils::implementsInterface($className, $interface);
+            return \Core\Utils\ReflectionUtils::implementsInterface($className, $interface);
         }
         return false;
     }

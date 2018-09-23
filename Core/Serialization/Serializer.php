@@ -64,7 +64,10 @@ class Serializer {
         }
 
         /** @var SerializableInterface $class */
-        $class = new $intoClass;
+        $class = \Core\Utils\ReflectionUtils::newInstance($intoClass);
+        if ($class === null) {
+            throw new SerializationException(sprintf("Can't create instance for class '%s'.", $intoClass));
+        }
         $class->denormalize($this->encoders[$format]->decode($str));
         return $class;
     }
