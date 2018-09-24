@@ -9,7 +9,7 @@ namespace Core\Http;
 */
 class JsonResponse extends Response {
 
-    public function __construct(int $statusCode, $content)
+    public function __construct(int $statusCode, string $content)
     {
         parent::__construct($statusCode, $content);
         $this->setContentType('application/json');

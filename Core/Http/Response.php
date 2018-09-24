@@ -161,7 +161,7 @@ class Response {
     private $statusText;
 
     /**
-     * @var mixed $content response body
+     * @var string $content response body
     */
     private $content;
 
@@ -175,7 +175,7 @@ class Response {
     */
     private $headers = [];
 
-    public function __construct(int $statusCode, $content = '') {
+    public function __construct(int $statusCode, string $content = '') {
         $this->setStatus($statusCode);
         $this->content = $content;
         $this->setContentType('text/plain');
@@ -201,7 +201,7 @@ class Response {
             $this->getStatusText());
     }
 
-    public function getContent() {
+    public function getContent(): string {
         return $this->content;
     }
 

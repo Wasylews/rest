@@ -17,11 +17,6 @@ abstract class AbstractApplication {
      */
     protected $container;
 
-    /**
-     * @var \Core\Serialization\Serializer
-    */
-    protected $serializer;
-
     public function run() {
         $this->bootstrap();
         $request = \Core\Http\Request::fromGlobals();
@@ -34,37 +29,12 @@ abstract class AbstractApplication {
             header("$key: $value", false, $response->getStatusCode());
         }
         header($response->getStatus(), true, $response->getStatusCode());
-        $this->sendSerializedContent($response->getContent(), $response->getContentType());
-    }
-
-    private function sendSerializedContent($content, $contentType) {
-        $format = $this->getSerializationFormat($contentType);
-        if ($format == null) {
-            echo $content;
-        } else {
-            try {
-                echo $this->serializer->serialize($content, $format);
-            } catch (\Core\Serialization\SerializationException $e) {
-                echo $e->getMessage();
-            }
-        }
-    }
-
-    private function getSerializationFormat(string $contentType) {
-        switch ($contentType) {
-            case 'application/json':
-                return \Core\Serialization\Serializer::FORMAT_JSON;
-            case 'application/xml':
-                return \Core\Serialization\Serializer::FORMAT_XML;
-            default:
-                return null;
-        }
+        echo $response->getContent();
     }
 
     private function bootstrap() {
         $this->initContainer();
         $this->initRouting();
-        $this->serializer = $this->container->get(\Core\Serialization\Serializer::class);
     }
 
     /**
