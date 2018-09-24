@@ -201,7 +201,7 @@ class Response {
             $this->getStatusText());
     }
 
-    public function getContent(): string {
+    public function getContent() {
         return $this->content;
     }
 

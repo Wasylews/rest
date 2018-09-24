@@ -7,7 +7,7 @@ namespace Core\Web;
 class Router {
 
     /**
-     * @field \Core\Di\DependencyContainer
+     * @var \Core\Di\DependencyContainer
     */
     private $container;
     private $routes = [];

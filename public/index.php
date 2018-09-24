@@ -1,5 +1,6 @@
 <?php
 
-$app = require __DIR__ . '/../App/bootstrap.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
+$app = new \App\Bootstrap\Application();
 $app->run();
