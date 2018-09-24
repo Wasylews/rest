@@ -8,10 +8,18 @@ namespace Core\Serialization\Encoder;
 class JsonEncoder implements EncoderInterface {
 
     function encode(array $arr): string {
-        return json_encode($arr);
+        $result = json_encode($arr);
+        if ($result === false) {
+            throw new EncodingException('Cannot encode array');
+        }
+        return $result;
     }
 
     function decode(string $str): array {
-        return json_decode($str, true);
+        $result = json_decode($str, true);
+        if ($result === null) {
+            throw new EncodingException('Cannot decode given string');
+        }
+        return $result;
     }
 }

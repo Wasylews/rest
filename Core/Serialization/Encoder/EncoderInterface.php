@@ -13,6 +13,7 @@ interface EncoderInterface {
      * Convert array to string of this encoder format.
      * @param array $arr associative array of some object
      * @return string format encoded string
+     * @throws EncodingException if encoder can't encode array
      */
     function encode(array $arr): string;
 
@@ -20,6 +21,7 @@ interface EncoderInterface {
      * Decode formatted string into associative array
      * @param string $str string of some format such as json or xml.
      * @return array associative array constructed of decoded string.
+     * @throws EncodingException if decoding wasn't successful
      */
     function decode(string $str): array;
 }

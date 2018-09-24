@@ -30,9 +30,9 @@ class XmlEncoder implements EncoderInterface {
      * @return string
      */
     function encode(array $arr): string {
-        $this->dom = new \DOMDocument('1.0', 'UTF-8');
+        $this->dom = new \DOMDocument('', '');
         $this->dom->appendChild($this->encodeArray($this->rootNodeName, $arr));
-        return $this->dom->saveXML();
+        return $this->dom->saveXML($this->dom->firstChild);
     }
 
     private function encodeArray($rootName, array $arr) {

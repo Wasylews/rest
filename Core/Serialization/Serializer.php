@@ -27,7 +27,7 @@ class Serializer {
      */
     public function addEncoder(string $format, $encoder) {
         if ($this->hasEncoder($format)) {
-            throw new SerializationException(sprintf("Encoder for format '%s' already registered.", $format));
+            throw new SerializationException(sprintf('Encoder for format "%s" already registered.', $format));
         }
         $this->encoders[$format] = $encoder;
     }
@@ -45,9 +45,13 @@ class Serializer {
      */
     public function serialize(SerializableInterface $object, string $format): string {
         if (!$this->hasEncoder($format)) {
-            throw new SerializationException(sprintf("Can't find encoder for format '%s'.", $format));
+            throw new SerializationException(sprintf('Cannot find encoder for format "%s".', $format));
         }
-        return $this->encoders[$format]->encode($object->normalize());
+        try {
+            return $this->encoders[$format]->encode($object->normalize());
+        } catch (Encoder\EncodingException $e) {
+            throw new SerializationException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -60,15 +64,19 @@ class Serializer {
      */
     public function deserialize(string $str, string $format, string $intoClass) {
         if (!$this->hasEncoder($format)) {
-            throw new SerializationException(sprintf("Can't find encoder for format '%s'.", $format));
+            throw new SerializationException(sprintf('Cannot find encoder for format "%s".', $format));
         }
 
         /** @var SerializableInterface $class */
         $class = \Core\Utils\ReflectionUtils::newInstance($intoClass);
         if ($class === null) {
-            throw new SerializationException(sprintf("Can't create instance for class '%s'.", $intoClass));
+            throw new SerializationException(sprintf('Cannot create instance for class "%s".', $intoClass));
         }
-        $class->denormalize($this->encoders[$format]->decode($str));
+        try {
+            $class->denormalize($this->encoders[$format]->decode($str));
+        } catch (Encoder\EncodingException $e) {
+            throw new SerializationException($e->getMessage(), $e->getCode(), $e);
+        }
         return $class;
     }
 }
