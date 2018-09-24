@@ -4,40 +4,57 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-class UserController extends \Core\Http\AbstractController {
+class UserController extends AbstractAppController {
 
     private $service;
-    private $serializer;
 
     public function __construct(\App\Service\UserService $service, \Core\Serialization\Serializer $serializer) {
         $this->service = $service;
-        $this->serializer = $serializer;
+        parent::__construct($serializer);
     }
 
     public function get(\Core\Http\Request $request): \Core\Http\Response {
-        if (!$request->hasParameter('id')) {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_OK,
-                json_encode($this->service->getAll()));
-        }
-
-        $userId = intval($request->getParameter('id'));
-        if ($userId != 0) {
-            return new \Core\Http\XmlResponse(\Core\Http\Response::HTTP_OK, $this->service->get($userId));
+        if ($request->hasParameter('id')) {
+            $userId = intval($request->getParameter('id'));
+            $user = $this->service->get($userId);
+            return $this->makeResponse($user, $request->getParameter('type'));
         } else {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST,
-                "Invalid user id");
+            $users = $this->service->getAll();
+            return $this->makeResponse($users, $request->getParameter('type'));
         }
     }
 
     public function post(\Core\Http\Request $request): \Core\Http\Response {
         try {
             $user = $this->serializer->deserialize($request->getBody(),
-                \Core\Serialization\Serializer::FORMAT_XML, \App\Model\UserModel::class);
+                $request->getParameter('type'),
+                \App\Model\UserModel::class);
             $this->service->add($user);
         } catch (\Core\Serialization\SerializationException $e) {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST,
-                "User data must be specified");
+            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
+        return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
+    }
+
+    public function delete(\Core\Http\Request $request): \Core\Http\Response {
+        $userId = intval($request->getParameter('id'));
+        $this->service->delete($userId);
+        return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
+    }
+
+    public function put(\Core\Http\Request $request): \Core\Http\Response {
+        try {
+            $userId = intval($request->getParameter('id'));
+
+            $newUser = $this->serializer->deserialize($request->getBody(),
+                $request->getParameter('type'),
+                \App\Model\UserModel::class);
+
+            $this->service->update($userId, $newUser);
+        } catch (\Core\Serialization\SerializationException $e) {
+            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+
         return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
     }
 }

@@ -12,10 +12,15 @@ class UserService {
     }
 
     public function getAll(): array {
-        return null;
+        return [];
     }
 
-    public function add($user) {
+    public function add(\App\Model\UserModel $user) {
+    }
 
+    public function delete(int $userId) {
+    }
+
+    public function update(int $userId, \App\Model\UserModel $newUser) {
     }
 }
