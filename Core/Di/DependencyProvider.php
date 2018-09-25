@@ -26,6 +26,11 @@ class DependencyProvider {
         return $this->makeInstance($dependencies);
     }
 
+
+    /**
+     * @param array $dependencies
+     * @return mixed
+     */
     protected function makeInstance(array $dependencies) {
         return new $this->class(...$dependencies);
     }

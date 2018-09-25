@@ -143,6 +143,7 @@ class DependencyContainer {
                 }
             }
         } catch (\ReflectionException $e) {
+            throw new DependencyException($e);
         }
         return $parameters;
     }

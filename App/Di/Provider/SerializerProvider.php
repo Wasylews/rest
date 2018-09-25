@@ -11,6 +11,7 @@ class SerializerProvider extends \Core\Di\SingletonDependencyProvider {
      * Get serializer configured with encoders
      * @param array $dependencies
      * @return \Core\Serialization\Serializer
+     * @throws \Core\Di\DependencyException
      */
     protected function makeInstance(array $dependencies) {
         /** @var \Core\Serialization\Serializer $serializer */
@@ -22,7 +23,7 @@ class SerializerProvider extends \Core\Di\SingletonDependencyProvider {
             $serializer->addEncoder(\Core\Serialization\Serializer::FORMAT_XML,
                 new \Core\Serialization\Encoder\XmlEncoder());
         } catch (\Core\Serialization\SerializationException $e) {
-            return null;
+            throw new \Core\Di\DependencyException($e);
         }
         return $serializer;
     }

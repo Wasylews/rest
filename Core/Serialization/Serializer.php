@@ -50,7 +50,7 @@ class Serializer {
         try {
             return $this->encoders[$format]->encode($object->normalize());
         } catch (Encoder\EncodingException $e) {
-            throw new SerializationException($e->getMessage(), $e->getCode(), $e);
+            throw new SerializationException($e);
         }
     }
 
@@ -75,7 +75,7 @@ class Serializer {
         try {
             $class->denormalize($this->encoders[$format]->decode($str));
         } catch (Encoder\EncodingException $e) {
-            throw new SerializationException($e->getMessage(), $e->getCode(), $e);
+            throw new SerializationException($e);
         }
         return $class;
     }
