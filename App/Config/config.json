@@ -1,0 +1,7 @@
+{
+  "environment": "dev",
+  "database": [
+    "driver": "pdo_sqlite",
+    "path": "rest.db"
+  ]
+}
