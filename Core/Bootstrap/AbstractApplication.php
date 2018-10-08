@@ -19,7 +19,7 @@ abstract class AbstractApplication {
 
     public function run() {
         $this->bootstrap();
-        $request = \Core\Http\Request::fromGlobals();
+        $request = $this->container->get(\Core\Http\Request::class);
         $response = $this->router->handle($request);
         $this->sendResponse($response);
     }
@@ -43,7 +43,8 @@ abstract class AbstractApplication {
     */
     protected function initContainer() {
         $this->container = new \Core\Di\DependencyContainer();
-        $this->container->registerSingleton(\Core\Web\Router::class);
+        $this->container->bind(\Core\Http\Request::class, \Core\Di\Provider\RequestProvider::class);
+        $this->container->bindSingleton(\Core\Web\Router::class);
         $this->registerServices();
     }
 

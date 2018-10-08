@@ -32,13 +32,6 @@ class Request {
         $this->url = $url;
     }
 
-    public static function fromGlobals(): Request {
-        $request = new Request($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-        $request->setBody(file_get_contents('php://input'));
-        $request->setHeaders(getallheaders());
-        return $request;
-    }
-
     public function getUrl(): string {
         return $this->url;
     }
