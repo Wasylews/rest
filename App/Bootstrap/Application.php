@@ -8,20 +8,31 @@ namespace App\Bootstrap;
 class Application extends \Core\Bootstrap\AbstractApplication {
 
     protected function registerServices() {
-        $this->container->registerProvider(\Core\Serialization\Serializer::class,
+        $this->container->bindSingleton(\Core\Serialization\Encoder\JsonEncoder::class);
+        $this->container->bindSingleton(\Core\Serialization\Encoder\XmlEncoder::class);
+        $this->container->bindSingleton(\Core\Serialization\Serializer::class,
             \App\Di\Provider\SerializerProvider::class);
+
+        $this->container->bindSingleton(\Doctrine\ORM\EntityManager::class,
+            \App\Di\Provider\DoctrineProvider::class);
+
+        /**
+         * Configs
+        */
+        $this->container->bindSingleton(\Core\Bootstrap\Config::class,
+            \App\Di\Provider\ConfigProvider::class);
 
         /**
          * Services
         */
-        $this->container->registerSingleton(\App\Service\UserService::class);
-        $this->container->registerSingleton(\App\Service\TransactionService::class);
+        $this->container->bindSingleton(\App\Service\UserService::class);
+        $this->container->bindSingleton(\App\Service\TransactionService::class);
 
         /**
          * Controllers
         */
-        $this->container->registerSingleton(\App\Controller\UserController::class);
-        $this->container->registerSingleton(\App\Controller\TransactionController::class);
+        $this->container->bindSingleton(\App\Controller\UserController::class);
+        $this->container->bindSingleton(\App\Controller\TransactionController::class);
     }
 
     protected function initRoutes() {
