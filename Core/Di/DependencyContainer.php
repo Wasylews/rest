@@ -4,99 +4,91 @@ declare(strict_types=1);
 
 namespace Core\Di;
 
-
 class DependencyContainer {
 
     /**
-     * @field DependencyProvider[] $providers
+     * @var DependencyBinding[]
     */
-    private $providers = [];
+    private $bindings = [];
 
     /**
-     * Register new class in container
+     * @var array cache for singleton instances
+    */
+    private $instanceCache = [];
+
+    /**
+     * Register provider for some class
+     * If there is no provider, then class provides itself
      * @param string $class
+     * @param string|null $provider
      */
-    public function register(string $class) {
-        $this->providers[$class] = new DependencyProvider($class);
+    public function bind(string $class, string $provider = null) {
+        $this->bindings[$class] = new DependencyBinding($class, $provider);
     }
 
     /**
-     * Register new singleton class in container
+     * Register provider with singleton lifetime scope
      * @param string $class
+     * @param string|null $provider
      */
-    public function registerSingleton(string $class) {
-        $this->providers[$class] = new SingletonDependencyProvider($class);
-    }
-
-    /**
-     * Register new class provider
-     * @param string $class class name to store in container
-     * @param string $providerClass provider class name
-     */
-    public function registerProvider(string $class, string $providerClass) {
-        $this->providers[$class] = new $providerClass($class);
+    public function bindSingleton(string $class, string $provider = null) {
+        $this->bindings[$class] = new DependencyBinding($class, $provider, true);
     }
 
     /**
      * Get class instance from container
      * @param $class
-     * @return mixed|null get instance or null if there is no provider for class
+     * @return mixed|null
      */
     public function get(string $class) {
         if ($this->has($class)) {
-            try {
-                return $this->getProvider($class)->get($this->resolveDependencies($class));
-            } catch (DependencyException $e) {
-                return null;
+            $binding = $this->bindings[$class];
+            if ($binding->isSingleton()) {
+                return $this->getSingleton($binding);
             }
-        }
-        return null;
-    }
-
-    public function getProvider(string $class): DependencyProvider {
-        if ($this->hasInterfaceProvider($class)) {
-            return $this->getInterfaceProvider($class);
-        }
-        return $this->providers[$class];
-    }
-
-    /**
-     * Get provider of class that implements given interface
-     * @param string $interface
-     * @return DependencyProvider
-     */
-    private function getInterfaceProvider(string $interface): DependencyProvider {
-        foreach ($this->providers as $className => $provider) {
-            if (\Core\Utils\ReflectionUtils::implementsInterface($className, $interface)) {
-                return $provider;
-            }
+            return $this->getInstance($binding);
         }
         return null;
     }
 
     /**
-     * Check if container has provider of $class
-     * or his implementation if $class is name of interface.
+     * Check if container has binding for $class
      * @param string $class
      * @return bool
      */
     public function has(string $class) {
-        if (\Core\Utils\ReflectionUtils::isInterface($class)) {
-            return $this->hasInterfaceProvider($class);
-        }
-        return array_key_exists($class, $this->providers);
+        return array_key_exists($class, $this->bindings);
     }
 
-    /**
-     * Check if container has implementation of this interface
-     * @param string $interface
-     * @return bool
-     */
-    private function hasInterfaceProvider(string $interface) {
-        foreach ($this->providers as $className => $provider) {
-            return \Core\Utils\ReflectionUtils::implementsInterface($className, $interface);
+    private function getSingleton(DependencyBinding $binding) {
+        if (!$this->hasCachedInstance($binding->getClass())) {
+            $this->instanceCache[$binding->getClass()] = $this->getInstance($binding);
         }
-        return false;
+        return $this->instanceCache[$binding->getClass()];
+    }
+
+    private function hasCachedInstance(string $class) {
+        return array_key_exists($class, $this->instanceCache);
+    }
+
+    private function getInstance(DependencyBinding $binding) {
+        $provider = $this->getProvider($binding->getProvider());
+        if ($provider instanceof Provider\DependencyProviderInterface) {
+            try {
+                return $provider->get();
+            } catch (DependencyException $e) {
+                return null;
+            }
+        }
+        return $provider;
+    }
+
+    private function getProvider(string $class) {
+        try {
+            return \Core\Utils\ReflectionUtils::newInstanceArgs($class, $this->resolveDependencies($class));
+        } catch (DependencyException $e) {
+            return null;
+        }
     }
 
     /**
@@ -131,7 +123,10 @@ class DependencyContainer {
             $constructor = $reflectionClass->getConstructor();
             if ($constructor != null) {
                 foreach ($constructor->getParameters() as $parameter) {
-                    if ($parameter->getType()->isBuiltin() && !$parameter->isDefaultValueAvailable()) {
+                    if ($parameter->getType()->isBuiltin()) {
+                        if ($parameter->isDefaultValueAvailable()) {
+                            continue;
+                        }
                         throw new DependencyException(sprintf('No default value available for %s in %s::%s()',
                             $parameter->getName(),
                             $parameter->getDeclaringClass()->getName(),
@@ -143,10 +138,8 @@ class DependencyContainer {
                 }
             }
         } catch (\ReflectionException $e) {
-            throw new DependencyException($e);
+            throw new DependencyException($e->getMessage(), $e->getCode(), $e);
         }
         return $parameters;
     }
-
-
 }
