@@ -1,7 +1,10 @@
 {
   "environment": "dev",
-  "database": [
-    "driver": "pdo_sqlite",
-    "path": "rest.db"
-  ]
+  "database": {
+    "driver": "pdo_mysql",
+    "host": "localhost",
+    "dbname": "restdb",
+    "user": "rest",
+    "password": "restpass"
+  }
 }

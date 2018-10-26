@@ -11,9 +11,15 @@ class DoctrineProvider implements \Core\Di\Provider\DependencyProviderInterface 
      * @var \Core\Bootstrap\Config $config
      */
     private $config;
+    /**
+     * @var \Core\Utils\PathResolver
+     */
+    private $pathResolver;
 
-    public function __construct(\Core\Bootstrap\Config $config) {
+    public function __construct(\Core\Bootstrap\Config $config,
+                                \Core\Utils\PathResolver $pathResolver) {
         $this->config = $config;
+        $this->pathResolver = $pathResolver;
     }
 
     public function get() {
@@ -26,7 +32,7 @@ class DoctrineProvider implements \Core\Di\Provider\DependencyProviderInterface 
     }
 
     private function getDatabaseConfiguration(): \Doctrine\ORM\Configuration {
-        if ($this->config->get('environment') == "dev") {
+        if ($this->config->get('environment') == 'dev') {
             $cache = new \Doctrine\Common\Cache\ArrayCache;
         } else {
             $cache = new \Doctrine\Common\Cache\ApcuCache;
@@ -34,13 +40,13 @@ class DoctrineProvider implements \Core\Di\Provider\DependencyProviderInterface 
 
         $config = new \Doctrine\ORM\Configuration;
         $config->setMetadataCacheImpl($cache);
-        $driverImpl = $config->newDefaultAnnotationDriver($config['database']['entity_folder']);
+        $driverImpl = $config->newDefaultAnnotationDriver($this->pathResolver->resolveBasePath('App/Database/Model'));
         $config->setMetadataDriverImpl($driverImpl);
         $config->setQueryCacheImpl($cache);
-        $config->setProxyDir($config['database']['proxy_folder']);
-        $config->setProxyNamespace($config['database']['proxy_namespace']);
+        $config->setProxyDir($this->pathResolver->resolveBasePath('storage'));
+        $config->setProxyNamespace('App\Database\Proxy');
 
-        if ($this->config->get('environment') == "dev") {
+        if ($this->config->get('environment') == 'dev') {
             $config->setAutoGenerateProxyClasses(true);
         } else {
             $config->setAutoGenerateProxyClasses(false);
