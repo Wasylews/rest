@@ -41,12 +41,16 @@ class DependencyContainer {
      * @return mixed|null
      */
     public function get(string $class) {
-        if ($this->has($class)) {
-            $binding = $this->bindings[$class];
-            if ($binding->isSingleton()) {
-                return $this->getSingleton($binding);
+        try {
+            if ($this->has($class)) {
+                $binding = $this->bindings[$class];
+                if ($binding->isSingleton()) {
+                    return $this->getSingleton($binding);
+                }
+                return $this->getInstance($binding);
             }
-            return $this->getInstance($binding);
+        } catch (DependencyException $ex) {
+            return null;
         }
         return null;
     }
@@ -60,6 +64,11 @@ class DependencyContainer {
         return array_key_exists($class, $this->bindings);
     }
 
+    /**
+     * @param DependencyBinding $binding
+     * @return mixed
+     * @throws DependencyException
+     */
     private function getSingleton(DependencyBinding $binding) {
         if (!$this->hasCachedInstance($binding->getClass())) {
             $this->instanceCache[$binding->getClass()] = $this->getInstance($binding);
@@ -71,6 +80,11 @@ class DependencyContainer {
         return array_key_exists($class, $this->instanceCache);
     }
 
+    /**
+     * @param DependencyBinding $binding
+     * @return mixed|null|object
+     * @throws DependencyException
+     */
     private function getInstance(DependencyBinding $binding) {
         $provider = $this->getProvider($binding->getProvider());
         if ($provider instanceof Provider\DependencyProviderInterface) {
@@ -83,12 +97,13 @@ class DependencyContainer {
         return $provider;
     }
 
+    /**
+     * @param string $class
+     * @return null|object
+     * @throws DependencyException
+     */
     private function getProvider(string $class) {
-        try {
-            return \Core\Utils\ReflectionUtils::newInstanceArgs($class, $this->resolveDependencies($class));
-        } catch (DependencyException $e) {
-            return null;
-        }
+        return \Core\Utils\ReflectionUtils::newInstanceArgs($class, $this->resolveDependencies($class));
     }
 
     /**
