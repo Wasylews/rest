@@ -32,9 +32,13 @@ abstract class AbstractApplication {
         echo $response->getContent();
     }
 
-    private function bootstrap() {
+    public function bootstrap() {
         $this->initContainer();
         $this->initRouting();
+    }
+
+    public function getContainer(): \Core\Di\DependencyContainer {
+        return $this->container;
     }
 
     /**
