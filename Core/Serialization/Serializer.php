@@ -37,18 +37,22 @@ class Serializer {
     }
 
     /**
-     * Serialize object to given format
-     * @param $object
+     * Serialize object or array to given format
+     * @param array|SerializableInterface $object
      * @param string $format
      * @return string
      * @throws SerializationException
      */
-    public function serialize(SerializableInterface $object, string $format): string {
+    public function serialize($object, string $format): string {
         if (!$this->hasEncoder($format)) {
             throw new SerializationException(sprintf('Cannot find encoder for format "%s".', $format));
         }
         try {
-            return $this->encoders[$format]->encode($object->normalize());
+            if ($object instanceof SerializableInterface) {
+                return $this->encoders[$format]->encode($object->normalize());
+            } else {
+                return $this->encoders[$format]->encode($object);
+            }
         } catch (Encoder\EncodingException $e) {
             throw new SerializationException($e);
         }
