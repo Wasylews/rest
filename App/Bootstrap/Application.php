@@ -13,12 +13,23 @@ class Application extends \Core\Bootstrap\AbstractApplication {
         $this->container->bindSingleton(\Core\Serialization\Serializer::class,
             \App\Di\Provider\SerializerProvider::class);
 
+        /**
+         * Database
+        */
         $this->container->bindSingleton(\Doctrine\ORM\EntityManager::class,
             \App\Di\Provider\DoctrineProvider::class);
 
         /**
+         * Repositories
+        */
+        $this->container->bindSingleton(\App\Database\Repository\UserRepository::class);
+        $this->container->bindSingleton(\App\Database\Repository\TransactionRepository::class);
+
+        /**
          * Configs
         */
+        $this->container->bindSingleton(\Core\Utils\PathResolver::class,
+            \App\Di\Provider\PathResolverProvider::class);
         $this->container->bindSingleton(\Core\Bootstrap\Config::class,
             \App\Di\Provider\ConfigProvider::class);
 
@@ -31,8 +42,8 @@ class Application extends \Core\Bootstrap\AbstractApplication {
         /**
          * Controllers
         */
-        $this->container->bindSingleton(\App\Controller\UserController::class);
-        $this->container->bindSingleton(\App\Controller\TransactionController::class);
+        $this->container->bindSingleton(\App\Http\Controller\UserController::class);
+        $this->container->bindSingleton(\App\Http\Controller\TransactionController::class);
     }
 
     protected function initRoutes() {
@@ -45,31 +56,31 @@ class Application extends \Core\Bootstrap\AbstractApplication {
          * Create new user
          */
         $this->router->post('/user?format={type}',
-            \App\Controller\UserController::class);
+            \App\Http\Controller\UserController::class);
 
         /**
          * Get all users
          */
         $this->router->get('/user?format={type}',
-            \App\Controller\UserController::class);
+            \App\Http\Controller\UserController::class);
 
         /**
          * Get user by id
          */
         $this->router->get('/user/{id}?format={type}',
-            \App\Controller\UserController::class);
+            \App\Http\Controller\UserController::class);
 
         /**
          * Update user profile
          */
         $this->router->put('/user/{id}?format={type}',
-            \App\Controller\UserController::class);
+            \App\Http\Controller\UserController::class);
 
         /**
          * Remove user from system
          */
         $this->router->delete('/user/{id}',
-            \App\Controller\UserController::class);
+            \App\Http\Controller\UserController::class);
 
     }
 
@@ -78,18 +89,18 @@ class Application extends \Core\Bootstrap\AbstractApplication {
          * Create new transaction
          */
         $this->router->post('/transaction?format={type}',
-            \App\Controller\TransactionController::class);
+            \App\Http\Controller\TransactionController::class);
 
         /**
          * Get all transactions for user
          */
         $this->router->get('/transaction?user={userId}&format={type}',
-            \App\Controller\TransactionController::class);
+            \App\Http\Controller\TransactionController::class);
 
         /**
          * Get transaction by id
          */
         $this->router->get('/transaction/{id}?format={type}',
-            \App\Controller\TransactionController::class);
+            \App\Http\Controller\TransactionController::class);
     }
 }
