@@ -41,6 +41,7 @@ abstract class AbstractRepository {
         $entity = $this->entityRepository->find($id);
         try {
             $this->entityManager->remove($entity);
+            $this->entityManager->flush($entity);
         } catch (\Exception $e) {
             throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
         }

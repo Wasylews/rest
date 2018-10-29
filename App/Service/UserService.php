@@ -29,7 +29,7 @@ class UserService {
      * @throws \Core\Database\DatabaseException
      */
     public function add(\App\Http\Model\UserRequest $request) {
-        if ($this->repository->hasEmail($request->getEmail())) {
+        if ($this->repository->hasByEmail($request->getEmail())) {
             throw new \Core\Database\DatabaseException('User with given email already exists');
         }
         $user = new \App\Database\Model\UserModel($request->getEmail(), $request->getFirstName(), $request->getLastName());
@@ -41,7 +41,11 @@ class UserService {
      * @throws \Core\Database\DatabaseException
      */
     public function delete(int $id) {
-        $this->repository->remove($id);
+        if ($this->repository->hasById($id)) {
+            $this->repository->remove($id);
+        } else {
+            throw new \Core\Database\DatabaseException('User with given id doesn\'t exists');
+        }
     }
 
     /**

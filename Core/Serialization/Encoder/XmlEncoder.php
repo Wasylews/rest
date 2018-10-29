@@ -33,7 +33,6 @@ class XmlEncoder implements EncoderInterface {
      */
     function encode(array $arr): string {
         $this->dom = new \DOMDocument('', '');
-        // FIXME: array of items(arrays)
         $this->dom->appendChild($this->encodeArray($this->rootNodeName, $arr));
         return $this->dom->saveXML($this->dom->firstChild);
     }

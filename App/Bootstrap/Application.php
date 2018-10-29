@@ -79,7 +79,7 @@ class Application extends \Core\Bootstrap\AbstractApplication {
         /**
          * Remove user from system
          */
-        $this->router->delete('/user/{id}',
+        $this->router->delete('/user/{id}?format={type}',
             \App\Http\Controller\UserController::class);
 
     }

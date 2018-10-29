@@ -9,7 +9,8 @@ class UserController extends AbstractAppController {
 
     private $service;
 
-    public function __construct(\App\Service\UserService $service, \Core\Serialization\Serializer $serializer) {
+    public function __construct(\App\Service\UserService $service,
+                                \Core\Serialization\Serializer $serializer) {
         $this->service = $service;
         parent::__construct($serializer);
     }
