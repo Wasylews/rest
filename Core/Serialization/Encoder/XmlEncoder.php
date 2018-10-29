@@ -14,6 +14,8 @@ class XmlEncoder implements EncoderInterface {
     */
     private $dom;
 
+    const ARRAY_ITEM_NODE_NAME = 'item';
+
     public function __construct(string $rootNode = 'response') {
         $this->rootNodeName = $rootNode;
     }
@@ -31,6 +33,7 @@ class XmlEncoder implements EncoderInterface {
      */
     function encode(array $arr): string {
         $this->dom = new \DOMDocument('', '');
+        // FIXME: array of items(arrays)
         $this->dom->appendChild($this->encodeArray($this->rootNodeName, $arr));
         return $this->dom->saveXML($this->dom->firstChild);
     }
@@ -39,6 +42,8 @@ class XmlEncoder implements EncoderInterface {
         $root = $this->dom->createElement($rootName);
         foreach ($arr as $name => $value) {
             if (is_array($value)) {
+                // handle array of arrays
+                $name = is_int($name) ? self::ARRAY_ITEM_NODE_NAME : $name;
                 $root->appendChild($this->encodeArray($name, $value));
             } else {
                 $root->appendChild($this->dom->createElement($name, (string) $value));
