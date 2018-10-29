@@ -7,20 +7,50 @@ namespace App\Service;
 
 class UserService {
 
-    public function get(int $id): \App\Model\UserModel {
-        return new \App\Model\UserModel($id, 'John', 'Snow');
+    /**
+     * @var \Core\Database\AbstractRepository
+     */
+    private $repository;
+
+    public function __construct(\App\Database\Repository\UserRepository $repository) {
+        $this->repository = $repository;
+    }
+
+    public function get(int $id) {
+        return $this->repository->get($id);
     }
 
     public function getAll(): array {
-        return [];
+        return $this->repository->getAll();
     }
 
-    public function add(\App\Model\UserModel $user) {
+    /**
+     * @param \App\Http\Model\UserRequest $request
+     * @throws \Core\Database\DatabaseException
+     */
+    public function add(\App\Http\Model\UserRequest $request) {
+        $user = new \App\Database\Model\UserModel($request->getFirstName(), $request->getLastName());
+        $this->repository->save($user);
     }
 
-    public function delete(int $userId) {
+    /**
+     * @param int $id
+     * @throws \Core\Database\DatabaseException
+     */
+    public function delete(int $id) {
+        $this->repository->remove($id);
     }
 
-    public function update(int $userId, \App\Model\UserModel $newUser) {
+    /**
+     * @param int $id
+     * @param \App\Http\Model\UserRequest $request
+     * @throws \Core\Database\DatabaseException
+     */
+    public function update(int $id, \App\Http\Model\UserRequest $request) {
+        /** @var \App\Database\Model\UserModel $entity */
+        $entity = $this->repository->get($id);
+        $entity->setFirstName($request->getFirstName());
+        $entity->setLastName($request->getLastName());
+        $this->repository->save($entity);
     }
 }
