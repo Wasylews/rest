@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Http\Controller;
 
 class TransactionController extends AbstractAppController {
 
@@ -11,7 +11,8 @@ class TransactionController extends AbstractAppController {
      */
     private $service;
 
-    public function __construct(\App\Service\TransactionService $service, \Core\Serialization\Serializer $serializer) {
+    public function __construct(\App\Service\TransactionService $service,
+                                \Core\Serialization\Serializer $serializer) {
         $this->service = $service;
         parent::__construct($serializer);
     }
@@ -20,13 +21,23 @@ class TransactionController extends AbstractAppController {
         if ($request->hasParameter('id')) {
             // get transaction by id
             $transactionId = intval($request->getParameter('id'));
-            $transaction = $this->service->get($transactionId);
-            return $this->makeResponse($transaction, $request->getParameter('type'));
+            try {
+                $transaction = $this->service->get($transactionId);
+                return $this->makeResponse($transaction, $request->getParameter('type'));
+            } catch (\Exception $e) {
+                return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
+                    \Core\Http\Response::HTTP_BAD_REQUEST);
+            }
         } else {
             // get all transactions for user
             $userId = intval($request->getParameter('userId'));
-            $transactions = $this->service->getAllForUser($userId);
-            return $this->makeResponse($transactions, $request->getParameter('type'));
+            try {
+                $transactions = $this->service->getAllForUser($userId);
+                return $this->makeResponse($transactions, $request->getParameter('type'));
+            } catch (\Exception $e) {
+                return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
+                    \Core\Http\Response::HTTP_BAD_REQUEST);
+            }
         }
     }
 
@@ -34,7 +45,7 @@ class TransactionController extends AbstractAppController {
         try {
             $transaction = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Model\TransactionModel::class);
+                \App\Database\Model\TransactionModel::class);
             $this->service->add($transaction);
         } catch (\Core\Serialization\SerializationException $e) {
             return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST, $e->getMessage());

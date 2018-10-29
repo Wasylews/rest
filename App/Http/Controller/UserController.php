@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Http\Controller;
+
 
 class UserController extends AbstractAppController {
 
@@ -19,26 +20,32 @@ class UserController extends AbstractAppController {
             $user = $this->service->get($userId);
             return $this->makeResponse($user, $request->getParameter('type'));
         } else {
-            $users = $this->service->getAll();
+            $users = new \Core\Serialization\Collections\SerializableArray($this->service->getAll());
             return $this->makeResponse($users, $request->getParameter('type'));
         }
     }
 
     public function post(\Core\Http\Request $request): \Core\Http\Response {
         try {
-            $user = $this->serializer->deserialize($request->getBody(),
+            $userRequest = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Model\UserModel::class);
-            $this->service->add($user);
-        } catch (\Core\Serialization\SerializationException $e) {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST, $e->getMessage());
+                \App\Http\Model\UserRequest::class);
+            $this->service->add($userRequest);
+        } catch (\Exception $e) {
+            return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
+                \Core\Http\Response::HTTP_BAD_REQUEST);
         }
         return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
     }
 
     public function delete(\Core\Http\Request $request): \Core\Http\Response {
         $userId = intval($request->getParameter('id'));
-        $this->service->delete($userId);
+        try {
+            $this->service->delete($userId);
+        } catch (\Exception $e) {
+            return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
+                \Core\Http\Response::HTTP_BAD_REQUEST);
+        }
         return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
     }
 
@@ -46,13 +53,14 @@ class UserController extends AbstractAppController {
         try {
             $userId = intval($request->getParameter('id'));
 
-            $newUser = $this->serializer->deserialize($request->getBody(),
+            $userRequest = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Model\UserModel::class);
+                \App\Http\Model\UserRequest::class);
 
-            $this->service->update($userId, $newUser);
-        } catch (\Core\Serialization\SerializationException $e) {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST, $e->getMessage());
+            $this->service->update($userId, $userRequest);
+        } catch (\Exception $e) {
+            return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
+                \Core\Http\Response::HTTP_BAD_REQUEST);
         }
 
         return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
