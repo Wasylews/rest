@@ -9,11 +9,11 @@ abstract class AbstractRepository {
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    private $entityManager;
+    protected $entityManager;
     /**
      * @var \Doctrine\ORM\EntityRepository
      */
-    private $entityRepository;
+    protected $entityRepository;
 
     public function __construct(\Doctrine\ORM\EntityManager $entityManager, string $entityName) {
         $this->entityManager = $entityManager;

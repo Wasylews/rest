@@ -18,6 +18,11 @@ class UserModel extends \Core\Database\AbstractModel {
     private $id;
 
     /**
+     * @\Doctrine\ORM\Mapping\Column(type="string", unique=true)
+     */
+    private $email;
+
+    /**
      * @\Doctrine\ORM\Mapping\Column(type="string")
      */
     private $firstName;
@@ -32,7 +37,8 @@ class UserModel extends \Core\Database\AbstractModel {
     */
     private $transactions;
 
-    public function __construct($firstName, $lastName) {
+    public function __construct(string $email, string $firstName, string $lastName) {
+        $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->transactions = new \Doctrine\Common\Collections\ArrayCollection();
@@ -46,17 +52,24 @@ class UserModel extends \Core\Database\AbstractModel {
         return $this->firstName;
     }
 
+    public function setFirstName(string $firstName) {
+        $this->firstName = $firstName;
+    }
 
     public function getLastName(): string {
         return $this->lastName;
     }
 
-    public function setFirstName(string $firstName) {
-        $this->firstName = $firstName;
-    }
-
     public function setLastName(string $lastName) {
         $this->lastName = $lastName;
+    }
+
+    public function getEmail(): string {
+        return $this->email;
+    }
+
+    public function setEmail(string $email) {
+        $this->email = $email;
     }
 
     public function getTransactions(): \Doctrine\Common\Collections\ArrayCollection {
@@ -74,6 +87,7 @@ class UserModel extends \Core\Database\AbstractModel {
     function normalize(): array {
         return [
             'id' => $this->id,
+            'email' => $this->email,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName
         ];
@@ -85,6 +99,7 @@ class UserModel extends \Core\Database\AbstractModel {
      */
     function denormalize(array $arr) {
         $this->id = intval($arr['id']);
+        $this->email = $arr['email'];
         $this->firstName = $arr['firstName'];
         $this->lastName = $arr['lastName'];
     }

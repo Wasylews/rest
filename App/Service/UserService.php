@@ -29,7 +29,10 @@ class UserService {
      * @throws \Core\Database\DatabaseException
      */
     public function add(\App\Http\Model\UserRequest $request) {
-        $user = new \App\Database\Model\UserModel($request->getFirstName(), $request->getLastName());
+        if ($this->repository->hasEmail($request->getEmail())) {
+            throw new \Core\Database\DatabaseException('User with given email already exists');
+        }
+        $user = new \App\Database\Model\UserModel($request->getEmail(), $request->getFirstName(), $request->getLastName());
         $this->repository->save($user);
     }
 

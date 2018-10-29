@@ -9,10 +9,12 @@ namespace App\Http\Model;
 */
 class UserRequest implements \Core\Serialization\SerializableInterface {
 
+    private $email;
     private $firstName;
     private $lastName;
 
-    public function __construct(string $firstName, string $lastName) {
+    public function __construct(string $email, string $firstName, string $lastName) {
+        $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
     }
@@ -33,12 +35,21 @@ class UserRequest implements \Core\Serialization\SerializableInterface {
         $this->lastName = $lastName;
     }
 
+    public function getEmail(): string {
+        return $this->email;
+    }
+
+    public function setEmail(string $email) {
+        $this->email = $email;
+    }
+
     /**
      * Get array of data to serialize
      * @return array
      */
     function normalize(): array {
         return [
+            'email' => $this->email,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName
         ];
@@ -49,6 +60,7 @@ class UserRequest implements \Core\Serialization\SerializableInterface {
      * @param array $arr
      */
     function denormalize(array $arr) {
+        $this->email = $arr['email'];
         $this->firstName = $arr['firstName'];
         $this->lastName = $arr['lastName'];
     }
