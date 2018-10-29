@@ -60,8 +60,8 @@ class UserRequest implements \Core\Serialization\SerializableInterface {
      * @param array $arr
      */
     function denormalize(array $arr) {
-        $this->email = $arr['email'];
-        $this->firstName = $arr['firstName'];
-        $this->lastName = $arr['lastName'];
+        $this->email = $arr['email'] ?? '';
+        $this->firstName = $arr['firstName'] ?? '';
+        $this->lastName = $arr['lastName'] ?? '';
     }
 }

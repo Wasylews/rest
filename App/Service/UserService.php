@@ -41,11 +41,12 @@ class UserService {
      * @throws \Core\Database\DatabaseException
      */
     public function delete(int $id) {
-        if ($this->repository->hasById($id)) {
-            $this->repository->remove($id);
-        } else {
+        /** @var \App\Database\Model\UserModel $entity */
+        $entity = $this->repository->get($id);
+        if ($entity == null) {
             throw new \Core\Database\DatabaseException('User with given id doesn\'t exists');
         }
+        $this->repository->remove($entity);
     }
 
     /**
@@ -56,8 +57,18 @@ class UserService {
     public function update(int $id, \App\Http\Model\UserRequest $request) {
         /** @var \App\Database\Model\UserModel $entity */
         $entity = $this->repository->get($id);
-        $entity->setFirstName($request->getFirstName());
-        $entity->setLastName($request->getLastName());
+        if ($entity == null) {
+            throw new \Core\Database\DatabaseException('User with given id doesn\'t exists');
+        }
+        if (!empty($request->getEmail())) {
+            $entity->setEmail($request->getEmail());
+        }
+        if (!empty($request->getFirstName())) {
+            $entity->setFirstName($request->getFirstName());
+        }
+        if (!empty($request->getLastName())) {
+            $entity->setLastName($request->getLastName());
+        }
         $this->repository->save($entity);
     }
 }

@@ -34,14 +34,13 @@ abstract class AbstractRepository {
     }
 
     /**
-     * @param int $id
+     * @param AbstractModel $model
      * @throws DatabaseException
      */
-    public function remove(int $id) {
-        $entity = $this->entityRepository->find($id);
+    public function remove(AbstractModel $model) {
         try {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush($entity);
+            $this->entityManager->remove($model);
+            $this->entityManager->flush($model);
         } catch (\Exception $e) {
             throw new DatabaseException($e->getMessage(), $e->getCode(), $e);
         }
