@@ -18,6 +18,10 @@ class UserController extends AbstractAppController {
         if ($request->hasParameter('id')) {
             $userId = intval($request->getParameter('id'));
             $user = $this->service->get($userId);
+            if ($user == null) {
+                return $this->makeResponse('Unknown id', $request->getParameter('type'),
+                    \Core\Http\Response::HTTP_BAD_REQUEST);
+            }
             return $this->makeResponse($user, $request->getParameter('type'));
         } else {
             $users = new \Core\Serialization\Collections\SerializableArray($this->service->getAll());
