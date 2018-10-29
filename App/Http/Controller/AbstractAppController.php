@@ -15,8 +15,11 @@ abstract class AbstractAppController extends \Core\Http\AbstractController {
 
     protected function makeResponse($content, $format, int $code = \Core\Http\Response::HTTP_OK): \Core\Http\Response {
         try {
-            $serializedContent = $this->serializer->serialize($content, $format);
-
+            if (is_string($content)) {
+                $serializedContent = $this->serializer->serialize(['message' => $content], $format);
+            } else {
+                $serializedContent = $this->serializer->serialize($content, $format);
+            }
             switch ($format) {
                 case \Core\Serialization\Serializer::FORMAT_XML:
                     return new \Core\Http\XmlResponse($code, $serializedContent);
