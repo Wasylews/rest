@@ -2,14 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Database\Model;
 
+/**
+ * @\Doctrine\ORM\Mapping\Entity
+ * @\Doctrine\ORM\Mapping\Table(name="transactions")
+ */
+class TransactionModel extends \Core\Database\AbstractModel {
 
-class TransactionModel implements \Core\Serialization\SerializableInterface {
-
+    /**
+     * @\Doctrine\ORM\Mapping\Id
+     * @\Doctrine\ORM\Mapping\GeneratedValue
+     * @\Doctrine\ORM\Mapping\Column(type="integer")
+     */
     private $id;
+
+    /**
+     * @\Doctrine\ORM\Mapping\ManyToOne(targetEntity="UserModel", inversedBy="transactions")
+     * @\Doctrine\ORM\Mapping\JoinColumn(name="from_id", referencedColumnName="id")
+     */
     private $from;
+
+    /**
+     * @\Doctrine\ORM\Mapping\ManyToOne(targetEntity="UserModel", inversedBy="transactions")
+     * @\Doctrine\ORM\Mapping\JoinColumn(name="to_id", referencedColumnName="id")
+     */
     private $to;
+
+    /**
+     * @\Doctrine\ORM\Mapping\Column(type="float")
+     */
     private $amount;
 
     public function __construct($id, $from, $to, $amount) {
@@ -28,19 +50,19 @@ class TransactionModel implements \Core\Serialization\SerializableInterface {
         $this->id = $id;
     }
 
-    public function getFrom(): int {
+    public function getFrom(): UserModel {
         return $this->from;
     }
 
-    public function setFrom(int $from) {
+    public function setFrom(UserModel $from) {
         $this->from = $from;
     }
 
-    public function getTo(): int {
+    public function getTo(): UserModel {
         return $this->to;
     }
 
-    public function setTo(int $to) {
+    public function setTo(UserModel $to) {
         $this->to = $to;
     }
 

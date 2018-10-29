@@ -2,21 +2,40 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Database\Model;
 
+/**
+ * @\Doctrine\ORM\Mapping\Entity
+ * @\Doctrine\ORM\Mapping\Table(name="users")
+ */
+class UserModel extends \Core\Database\AbstractModel {
 
-use Core\Serialization\SerializableInterface;
-
-class UserModel implements SerializableInterface {
-
+    /**
+     * @\Doctrine\ORM\Mapping\Id
+     * @\Doctrine\ORM\Mapping\GeneratedValue
+     * @\Doctrine\ORM\Mapping\Column(type="integer")
+    */
     private $id;
+
+    /**
+     * @\Doctrine\ORM\Mapping\Column(type="string")
+     */
     private $firstName;
+
+    /**
+     * @\Doctrine\ORM\Mapping\Column(type="string")
+     */
     private $lastName;
 
-    public function __construct($id, $firstName, $lastName) {
-        $this->id = $id;
+    /**
+     * @\Doctrine\ORM\Mapping\OneToMany(targetEntity="TransactionModel", mappedBy="transactions")
+    */
+    private $transactions;
+
+    public function __construct($firstName, $lastName) {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+        $this->transactions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): int {
@@ -32,16 +51,20 @@ class UserModel implements SerializableInterface {
         return $this->lastName;
     }
 
-    public function setId(int $id) {
-        $this->id = $id;
-    }
-
     public function setFirstName(string $firstName) {
         $this->firstName = $firstName;
     }
 
     public function setLastName(string $lastName) {
         $this->lastName = $lastName;
+    }
+
+    public function getTransactions(): \Doctrine\Common\Collections\ArrayCollection {
+        return $this->transactions;
+    }
+
+    public function addTransaction(TransactionModel $transaction) {
+        $this->transactions->add($transaction);
     }
 
     /**
