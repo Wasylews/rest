@@ -32,7 +32,7 @@ class TransactionController extends AbstractAppController {
             // get all transactions for user
             $userId = intval($request->getParameter('userId'));
             try {
-                $transactions = $this->service->getAllForUser($userId);
+                $transactions = new \Core\Serialization\Collections\SerializableArray($this->service->getAllForUser($userId)->toArray());
                 return $this->makeResponse($transactions, $request->getParameter('type'));
             } catch (\Exception $e) {
                 return $this->makeResponse($e->getMessage(), $request->getParameter('type'),

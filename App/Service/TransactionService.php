@@ -43,10 +43,10 @@ class TransactionService {
 
     /**
      * @param int $userId
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\Collection
      * @throws \Exception
      */
-    public function getAllForUser(int $userId): \Doctrine\Common\Collections\ArrayCollection {
+    public function getAllForUser(int $userId): \Doctrine\Common\Collections\Collection {
         /** @var \App\Database\Model\UserModel|null $user */
         $user = $this->userRepository->get($userId);
         if ($user != null) {
