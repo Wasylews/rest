@@ -34,7 +34,7 @@ class UserController extends AbstractAppController {
         try {
             $userRequest = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Http\Model\UserRequest::class);
+                \App\Http\Model\CreateUserRequest::class);
             $this->service->add($userRequest);
         } catch (\Exception $e) {
             return $this->makeResponse($e->getMessage(), $request->getParameter('type'),

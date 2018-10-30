@@ -25,14 +25,15 @@ class UserService {
     }
 
     /**
-     * @param \App\Http\Model\UserRequest $request
+     * @param \App\Http\Model\CreateUserRequest $request
      * @throws \Core\Database\DatabaseException
      */
-    public function add(\App\Http\Model\UserRequest $request) {
+    public function add(\App\Http\Model\CreateUserRequest $request) {
         if ($this->repository->hasByEmail($request->getEmail())) {
             throw new \Core\Database\DatabaseException('User with given email already exists');
         }
         $user = new \App\Database\Model\UserModel($request->getEmail(), $request->getFirstName(), $request->getLastName());
+        $user->addTransaction(new \App\Database\Model\TransactionModel(null, $user, $request->getBalance()));
         $this->repository->save($user);
     }
 

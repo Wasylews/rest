@@ -9,15 +9,9 @@ namespace App\Http\Model;
 */
 class UserRequest implements \Core\Serialization\SerializableInterface {
 
-    private $email;
-    private $firstName;
-    private $lastName;
-
-    public function __construct(string $email, string $firstName, string $lastName) {
-        $this->email = $email;
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-    }
+    protected $email;
+    protected $firstName;
+    protected $lastName;
 
     public function getFirstName(): string {
         return $this->firstName;
