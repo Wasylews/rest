@@ -43,12 +43,13 @@ class TransactionController extends AbstractAppController {
 
     public function post(\Core\Http\Request $request): \Core\Http\Response {
         try {
-            $transaction = $this->serializer->deserialize($request->getBody(),
+            $request = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Database\Model\TransactionModel::class);
-            $this->service->add($transaction);
-        } catch (\Core\Serialization\SerializationException $e) {
-            return new \Core\Http\Response(\Core\Http\Response::HTTP_BAD_REQUEST, $e->getMessage());
+                \App\Http\Model\CreateTransactionRequest::class);
+            $this->service->add($request);
+        } catch (\Exception $e) {
+            return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
+                \Core\Http\Response::HTTP_BAD_REQUEST);
         }
         return new \Core\Http\Response(\Core\Http\Response::HTTP_OK);
     }

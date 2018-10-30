@@ -23,7 +23,21 @@ class TransactionService {
         $this->transactionRepository = $transactionRepository;
     }
 
-    public function add(\App\Database\Model\TransactionModel $transaction) {
+    /**
+     * @param \App\Http\Model\CreateTransactionRequest $request
+     * @throws \Exception
+     */
+    public function add(\App\Http\Model\CreateTransactionRequest $request) {
+        $userFrom = $this->userRepository->get($request->getFrom());
+        if ($userFrom == null) {
+            throw new \Exception(sprintf('Cannot find user by given id %d', $request->getFrom()));
+        }
+        $userTo = $this->userRepository->get($request->getTo());
+        if ($userTo == null) {
+            throw new \Exception(sprintf('Cannot find user by given id %d', $request->getTo()));
+        }
+
+        $transaction = new \App\Database\Model\TransactionModel($userFrom, $userTo, $request->getAmount());
         $this->transactionRepository->save($transaction);
     }
 
