@@ -18,13 +18,15 @@ class TransactionModel extends \Core\Database\AbstractModel {
     private $id;
 
     /**
-     * @\Doctrine\ORM\Mapping\ManyToOne(targetEntity="UserModel", inversedBy="transactions")
-     * @\Doctrine\ORM\Mapping\JoinColumn(name="from_id", referencedColumnName="id")
+     * @var UserModel
+     * @\Doctrine\ORM\Mapping\ManyToOne(targetEntity="UserModel", inversedBy="outcomeTransactions", fetch="EAGER")
+     * @\Doctrine\ORM\Mapping\JoinColumn(name="from_id", referencedColumnName="id", nullable=true)
      */
     private $from;
 
     /**
-     * @\Doctrine\ORM\Mapping\ManyToOne(targetEntity="UserModel", inversedBy="transactions")
+     * @var UserModel
+     * @\Doctrine\ORM\Mapping\ManyToOne(targetEntity="UserModel", inversedBy="incomeTransactions", fetch="EAGER")
      * @\Doctrine\ORM\Mapping\JoinColumn(name="to_id", referencedColumnName="id")
      */
     private $to;
@@ -34,8 +36,7 @@ class TransactionModel extends \Core\Database\AbstractModel {
      */
     private $amount;
 
-    public function __construct($id, $from, $to, $amount) {
-        $this->id = $id;
+    public function __construct($from, $to, $amount) {
         $this->from = $from;
         $this->to = $to;
         $this->amount = $amount;
@@ -50,7 +51,10 @@ class TransactionModel extends \Core\Database\AbstractModel {
         $this->id = $id;
     }
 
-    public function getFrom(): UserModel {
+    /**
+     * @return null|UserModel
+     */
+    public function getFrom() {
         return $this->from;
     }
 
@@ -81,8 +85,8 @@ class TransactionModel extends \Core\Database\AbstractModel {
     function normalize(): array {
         return [
             'id' => $this->id,
-            'from' => $this->from,
-            'to' => $this->to,
+            'from' => $this->from ? $this->from->normalize(): null, // handle bootstrap transaction
+            'to' => $this->to->normalize(),
             'amount' => $this->amount
         ];
     }

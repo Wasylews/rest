@@ -33,15 +33,21 @@ class UserModel extends \Core\Database\AbstractModel {
     private $lastName;
 
     /**
-     * @\Doctrine\ORM\Mapping\OneToMany(targetEntity="TransactionModel", mappedBy="transactions")
+     * @\Doctrine\ORM\Mapping\OneToMany(targetEntity="TransactionModel", mappedBy="from", cascade={"persist"})
     */
-    private $transactions;
+    private $outcomeTransactions;
+
+    /**
+     * @\Doctrine\ORM\Mapping\OneToMany(targetEntity="TransactionModel", mappedBy="to", cascade={"persist"})
+     */
+    private $incomeTransactions;
 
     public function __construct(string $email, string $firstName, string $lastName) {
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
-        $this->transactions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->incomeTransactions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->outcomeTransactions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): int {
@@ -72,12 +78,29 @@ class UserModel extends \Core\Database\AbstractModel {
         $this->email = $email;
     }
 
-    public function getTransactions(): \Doctrine\Common\Collections\ArrayCollection {
-        return $this->transactions;
+    public function getTransactions(): \Doctrine\Common\Collections\Collection {
+        $transactions = array_merge($this->incomeTransactions->toArray(), $this->outcomeTransactions->toArray());
+        return new \Doctrine\Common\Collections\ArrayCollection($transactions);
     }
 
     public function addTransaction(TransactionModel $transaction) {
-        $this->transactions->add($transaction);
+        if ($transaction->getFrom() != null && $transaction->getFrom()->getId() == $this->id) {
+            $this->outcomeTransactions->add($transaction);
+        } else {
+            $this->incomeTransactions->add($transaction);
+        }
+    }
+
+    public function getBalance(): float {
+        $sum = 0;
+        foreach ($this->getTransactions() as $transaction) {
+            if ($transaction->getFrom() != null && $transaction->getFrom()->getId() == $this->id) {
+                $sum -= $transaction->getAmount();
+            } else {
+                $sum += $transaction->getAmount();
+            }
+        }
+        return $sum;
     }
 
     /**
@@ -89,7 +112,8 @@ class UserModel extends \Core\Database\AbstractModel {
             'id' => $this->id,
             'email' => $this->email,
             'firstName' => $this->firstName,
-            'lastName' => $this->lastName
+            'lastName' => $this->lastName,
+            'balance' => $this->getBalance()
         ];
     }
 
