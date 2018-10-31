@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Database\Model;
+namespace App\V1\Database\Model;
 
 /**
  * @\Doctrine\ORM\Mapping\Entity

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Model;
+namespace App\V1\Http\Model;
 
 
 class CreateUserRequest extends UserRequest {

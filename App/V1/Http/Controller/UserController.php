@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controller;
+namespace App\V1\Http\Controller;
 
 
-class UserController extends AbstractAppController {
+class UserController extends \App\Http\Controller\AbstractAppController {
 
     private $service;
 
-    public function __construct(\App\Service\UserService $service,
+    public function __construct(\App\V1\Service\UserService $service,
                                 \Core\Serialization\Serializer $serializer) {
         $this->service = $service;
         parent::__construct($serializer);
@@ -34,7 +34,7 @@ class UserController extends AbstractAppController {
         try {
             $userRequest = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Http\Model\CreateUserRequest::class);
+                \App\V1\Http\Model\CreateUserRequest::class);
             $this->service->add($userRequest);
         } catch (\Exception $e) {
             return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
@@ -60,7 +60,7 @@ class UserController extends AbstractAppController {
 
             $userRequest = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Http\Model\UserRequest::class);
+                \App\V1\Http\Model\UserRequest::class);
 
             $this->service->update($userId, $userRequest);
         } catch (\Exception $e) {

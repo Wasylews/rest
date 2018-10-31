@@ -17,6 +17,11 @@ abstract class AbstractApplication {
      */
     protected $container;
 
+    /**
+     * @var \Core\Bootstrap\BundleInterface[]
+    */
+    protected $bundles = [];
+
     public function run() {
         $this->bootstrap();
         $request = $this->container->get(\Core\Http\Request::class);
@@ -32,9 +37,14 @@ abstract class AbstractApplication {
         echo $response->getContent();
     }
 
+    protected function addBundle(BundleInterface $bundle) {
+        array_push($this->bundles, $bundle);
+    }
+
     public function bootstrap() {
         $this->initContainer();
         $this->initRouting();
+        $this->initBundles();
     }
 
     public function getContainer(): \Core\Di\DependencyContainer {
@@ -43,32 +53,36 @@ abstract class AbstractApplication {
 
     /**
      * Dependency container initialization.
-     * User can override this method to supply his own container
+     * User can override this method to supply custom container
     */
     protected function initContainer() {
         $this->container = new \Core\Di\DependencyContainer();
         $this->container->bind(\Core\Http\Request::class, \Core\Di\Provider\RequestProvider::class);
         $this->container->bindSingleton(\Core\Web\Router::class);
-        $this->registerServices();
+        $this->bindServices();
     }
 
     /**
      * Web router initialization.
-     * User can override this method for using his own router
+     * User can override this method for using custom router
     */
     protected function initRouting() {
         $this->router = $this->container->get(\Core\Web\Router::class);
         $this->router->setContainer($this->container);
-        $this->initRoutes();
+    }
+
+    private function initBundles() {
+        $this->loadBundles();
+        foreach ($this->bundles as $bundle) {
+            $bundle->bindServices($this->container);
+            $bundle->initRoutes($this->router);
+        }
     }
 
     /**
      * Method for loading user dependencies into container
     */
-    protected abstract function registerServices();
+    protected abstract function bindServices();
 
-    /**
-     * Method for app routing initialization
-    */
-    protected abstract function initRoutes();
+    protected abstract function loadBundles();
 }

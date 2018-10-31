@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controller;
+namespace App\V1\Http\Controller;
 
-class TransactionController extends AbstractAppController {
+class TransactionController extends \App\Http\Controller\AbstractAppController {
 
     /**
-     * @var \App\Service\TransactionService
+     * @var \App\V1\Service\TransactionService
      */
     private $service;
 
-    public function __construct(\App\Service\TransactionService $service,
+    public function __construct(\App\V1\Service\TransactionService $service,
                                 \Core\Serialization\Serializer $serializer) {
         $this->service = $service;
         parent::__construct($serializer);
@@ -45,7 +45,7 @@ class TransactionController extends AbstractAppController {
         try {
             $request = $this->serializer->deserialize($request->getBody(),
                 $request->getParameter('type'),
-                \App\Http\Model\CreateTransactionRequest::class);
+                \App\V1\Http\Model\CreateTransactionRequest::class);
             $this->service->add($request);
         } catch (\Exception $e) {
             return $this->makeResponse($e->getMessage(), $request->getParameter('type'),
